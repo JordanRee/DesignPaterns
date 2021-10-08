@@ -99,17 +99,17 @@ namespace DIContainer.Test.Singleton
             var object3 = provider.GetService<ISimpleTestingObject>();
 
             Assert.AreSame(object1, object2, "Both base objects should be the same on init.");
-            Assert.AreSame(object1.TestObj, object2.TestObj, "Both inner object should be the same on init.");
-            Assert.AreSame(object1.TestObj, object3, "Both the inner objects and external object should be the same on init.");
+            Assert.AreSame(object1.SimpleTestObj, object2.SimpleTestObj, "Both inner object should be the same on init.");
+            Assert.AreSame(object1.SimpleTestObj, object3, "Both the inner objects and external object should be the same on init.");
 
             object1.TestInt = 2;
             object2.TestStr = "test";
-            object1.TestObj.TestInt = 5;
+            object1.SimpleTestObj.TestInt = 5;
             object3.TestStr = "nono";
 
             Assert.AreSame(object1, object2, "Both base objects should be the same after edit.");
-            Assert.AreSame(object1.TestObj, object2.TestObj, "Both inner object should be the same after edit.");
-            Assert.AreSame(object1.TestObj, object3, "Both the inner objects and external object should be the same after edit.");
+            Assert.AreSame(object1.SimpleTestObj, object2.SimpleTestObj, "Both inner object should be the same after edit.");
+            Assert.AreSame(object1.SimpleTestObj, object3, "Both the inner objects and external object should be the same after edit.");
         }
     }
 }

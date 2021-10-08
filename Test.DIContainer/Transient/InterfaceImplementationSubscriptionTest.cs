@@ -100,23 +100,23 @@ namespace DIContainer.Test.Transient
             var object3 = provider.GetService<ISimpleTestingObject>();
 
             Assert.AreNotSame(object1, object2, "Both base objects shouldn't be the same on init.");
-            Assert.AreNotSame(object1.TestObj, object2.TestObj, "Both inner object shouldn't be the same on init.");
-            Assert.AreNotSame(object1.TestObj, object3, "Both the inner objects and external object shouldn't be the same on init.");
+            Assert.AreNotSame(object1.SimpleTestObj, object2.SimpleTestObj, "Both inner object shouldn't be the same on init.");
+            Assert.AreNotSame(object1.SimpleTestObj, object3, "Both the inner objects and external object shouldn't be the same on init.");
 
             object1.TestInt = 2;
             object2.TestInt = 2;
             object1.TestStr = "test";
             object2.TestStr = "test";
-            object1.TestObj.TestInt = 5;
-            object2.TestObj.TestInt = 5;
-            object1.TestObj.TestStr = "nono";
-            object2.TestObj.TestStr = "nono";
+            object1.SimpleTestObj.TestInt = 5;
+            object2.SimpleTestObj.TestInt = 5;
+            object1.SimpleTestObj.TestStr = "nono";
+            object2.SimpleTestObj.TestStr = "nono";
             object3.TestInt = 5;
             object3.TestStr = "nono";
 
             Assert.AreNotSame(object1, object2, "Both base objects shouldn't be the same after edit.");
-            Assert.AreNotSame(object1.TestObj, object2.TestObj, "Both inner object shouldn't be the same after edit.");
-            Assert.AreNotSame(object1.TestObj, object3, "Both the inner objects and external object shouldn't be the same after edit.");
+            Assert.AreNotSame(object1.SimpleTestObj, object2.SimpleTestObj, "Both inner object shouldn't be the same after edit.");
+            Assert.AreNotSame(object1.SimpleTestObj, object3, "Both the inner objects and external object shouldn't be the same after edit.");
         }
     }
 }
