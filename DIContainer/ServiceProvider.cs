@@ -31,7 +31,7 @@ namespace DIContainer
         private object GetService(Type serviceType, int scope)
         {
             // Find service
-            var serviceDescriptor = collection.ToList().First(s => s.ServiceType == serviceType);
+            var serviceDescriptor = collection.ToList().FirstOrDefault(s => s.ServiceType == serviceType);
 
             if (serviceDescriptor is null)
                 throw new Exception($"{serviceType.FullName} is not registered in the service collection.");

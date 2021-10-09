@@ -109,5 +109,15 @@ namespace DIContainer.Test.Singleton
             Assert.AreSame(object1.SimpleTestObj, object2.SimpleTestObj, "Both inner object should be the same after edit.");
             Assert.AreSame(object1.SimpleTestObj, object3, "Both the inner objects and external object should be the same after edit.");
         }
+
+        [Test]
+        public override void HasMissingReference()
+        {
+            _ = collection.AddSingleton<ClassParameterTestingObject>();
+
+            var provider = collection.BuildServiceProvider();
+
+            Assert.Throws<Exception>(delegate { provider.GetService<ClassParameterTestingObject>(); }, "Should throw an exception if one on the parameter wanted is not referenced in the collection.");
+        }
     }
 }

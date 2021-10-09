@@ -118,5 +118,15 @@ namespace DIContainer.Test.Transient
             Assert.AreNotSame(object1.SimpleTestObj, object2.SimpleTestObj, "Both inner object shouldn't be the same after edit.");
             Assert.AreNotSame(object1.SimpleTestObj, object3, "Both the inner objects and external object shouldn't be the same after edit.");
         }
+
+        [Test]
+        public override void HasMissingReference()
+        {
+            _ = collection.AddTransient<IParameterTestingObject, InterfaceParameterTestingObject>();
+
+            var provider = collection.BuildServiceProvider();
+
+            Assert.Throws<Exception>(delegate { provider.GetService<IParameterTestingObject>(); }, "Should throw an exception if one on the parameter wanted is not referenced in the collection.");
+        }
     }
 }

@@ -32,5 +32,7 @@ namespace DIContainer.Test.Scoped
         public abstract void RightScopedObjectCreatedAndResolvedWithParams();
 
         public abstract void ObjectProvidedAreTheSameOnSameCallPileWithParams();
+
+        public abstract void HasMissingReference();
     }
 }

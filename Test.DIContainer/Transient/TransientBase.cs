@@ -32,5 +32,7 @@ namespace DIContainer.Test.Transient
         public abstract void RightTransientObjectCreatedAndResolvedWithParams();
 
         public abstract void ObjectProvidedAreNotTheSameWithParams();
+
+        public abstract void HasMissingReference();
     }
 }

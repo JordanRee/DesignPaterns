@@ -2,6 +2,7 @@
 using DIContainer.Descriptors;
 using DIContainer.Extentions;
 using NUnit.Framework;
+using System;
 using System.Linq;
 
 namespace DIContainer.Test.Transient
@@ -113,6 +114,16 @@ namespace DIContainer.Test.Transient
             Assert.AreNotSame(object1, object2, "Both base objects shouldn't be the same after edit.");
             Assert.AreNotSame(object1.SimpleTestObj, object2.SimpleTestObj, "Both inner object shouldn't be the same after edit.");
             Assert.AreNotSame(object1.SimpleTestObj, object3, "Both the inner objects and external object shouldn't be the same after edit.");
+        }
+
+        [Test]
+        public override void HasMissingReference()
+        {
+            _ = collection.AddTransient<ClassParameterTestingObject>();
+
+            var provider = collection.BuildServiceProvider();
+
+            Assert.Throws<Exception>(delegate { provider.GetService<ClassParameterTestingObject>(); }, "Should throw an exception if one on the parameter wanted is not referenced in the collection.");
         }
     }
 }

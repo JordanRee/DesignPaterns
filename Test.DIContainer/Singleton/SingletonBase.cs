@@ -32,5 +32,7 @@ namespace DIContainer.Test.Singleton
         public abstract void RightSingletonObjectCreatedAndResolvedWithParams();
 
         public abstract void ObjectProvidedAreTheSameWithParams();
+
+        public abstract void HasMissingReference();
     }
 }

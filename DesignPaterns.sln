@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DIContainer", "DIContainer\DIContainer.csproj", "{38EEEF3F-B128-40AA-B2D7-6E33AC0E62D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIContainer.Test", "Test.DIContainer\DIContainer.Test.csproj", "{38E09BF7-1D75-4FDA-A23F-9BB258CE9DF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DIContainer.Test", "Test.DIContainer\Test.DIContainer.csproj", "{38E09BF7-1D75-4FDA-A23F-9BB258CE9DF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

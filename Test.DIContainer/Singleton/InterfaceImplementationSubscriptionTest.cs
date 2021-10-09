@@ -4,6 +4,7 @@ namespace DIContainer.Test.Singleton
     using DIContainer.Descriptors;
     using DIContainer.Extentions;
     using NUnit.Framework;
+    using System;
     using System.Linq;
 
     public class InterfaceImplementationSubscriptionTest : SingletonBase
@@ -110,6 +111,16 @@ namespace DIContainer.Test.Singleton
             Assert.AreSame(object1, object2, "Both base objects should be the same after edit.");
             Assert.AreSame(object1.SimpleTestObj, object2.SimpleTestObj, "Both inner object should be the same after edit.");
             Assert.AreSame(object1.SimpleTestObj, object3, "Both the inner objects and external object should be the same after edit.");
+        }
+
+        [Test]
+        public override void HasMissingReference()
+        {
+            _ = collection.AddSingleton<IParameterTestingObject, InterfaceParameterTestingObject>();
+
+            var provider = collection.BuildServiceProvider();
+
+            Assert.Throws<Exception>(delegate { provider.GetService<IParameterTestingObject>(); }, "Should throw an exception if one on the parameter wanted is not referenced in the collection.");
         }
     }
 }

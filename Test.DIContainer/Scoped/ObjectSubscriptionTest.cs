@@ -4,6 +4,7 @@ namespace DIContainer.Test.Scoped
     using DIContainer.Descriptors;
     using DIContainer.Extentions;
     using NUnit.Framework;
+    using System;
     using System.Linq;
 
     public class ObjectSubscriptionTest : ScopedBase
@@ -130,6 +131,16 @@ namespace DIContainer.Test.Scoped
             Assert.AreNotSame(object1.SimpleTestObj, object2.SimpleTestObj, "Both the inner objects and external object shouldn't be the same after edit.");
             Assert.AreNotSame(object1.SimpleTestObj, object2.ParamTestObj.SimpleTestObj, "Both the inner objects and external object shouldn't be the same after edit.");
             Assert.AreNotSame(object1.SimpleTestObj, object3, "Both the inner objects and external object shouldn't be the same after edit.");
+        }
+
+        [Test]
+        public override void HasMissingReference()
+        {
+            _ = collection.AddScoped<ClassParameterTestingObject>();
+
+            var provider = collection.BuildServiceProvider();
+
+            Assert.Throws<Exception>(delegate { provider.GetService<ClassParameterTestingObject>(); }, "Should throw an exception if one on the parameter wanted is not referenced in the collection.");
         }
     }
 }
