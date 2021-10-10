@@ -17,7 +17,7 @@ namespace DIContainer.Test.Scoped
 
             _ = collection.AddScoped<SimpleTestingObject>();
 
-            Assert.AreEqual(1, collection.Count(), "The collection should have an item after Singleton added.");
+            Assert.AreEqual(1, collection.Count(), "The collection should have an item after Scoped added.");
 
             Assert.AreEqual(typeof(SimpleTestingObject), collection.First().ServiceType, "The service type to target should be equal.");
             Assert.AreEqual(typeof(SimpleTestingObject), collection.First().ImplementationType, "The service type to target should be equal.");
@@ -66,7 +66,7 @@ namespace DIContainer.Test.Scoped
             _ = collection.AddScoped<ClassParameterTestingObject>();
             _ = collection.AddScoped<ClassParameterTestingObject2>();
 
-            Assert.AreEqual(3, collection.Count(), "The collection should have an item after Singleton added.");
+            Assert.AreEqual(3, collection.Count(), "The collection should have an item after Scoped added.");
         }
 
         [Test]
@@ -140,7 +140,7 @@ namespace DIContainer.Test.Scoped
 
             var provider = collection.BuildServiceProvider();
 
-            Assert.Throws<Exception>(delegate { provider.GetService<ClassParameterTestingObject>(); }, "Should throw an exception if one on the parameter wanted is not referenced in the collection.");
+            Assert.Throws<Exception>(delegate { provider.GetService<ClassParameterTestingObject>(); }, "Should throw an exception if one of the parameter wanted is not referenced in the collection.");
         }
     }
 }

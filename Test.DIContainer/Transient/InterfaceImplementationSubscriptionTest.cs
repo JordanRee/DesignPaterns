@@ -16,7 +16,7 @@ namespace DIContainer.Test.Transient
 
             _ = collection.AddTransient<ISimpleTestingObject, SimpleTestingObject>();
 
-            Assert.AreEqual(1, collection.Count(), "The collection should have an item after Singleton added.");
+            Assert.AreEqual(1, collection.Count(), "The collection should have an item after Transient added.");
 
             Assert.AreEqual(typeof(ISimpleTestingObject), collection.First().ServiceType, "The service type to target should be equal.");
             Assert.AreEqual(typeof(SimpleTestingObject), collection.First().ImplementationType, "The service type to target should be equal.");
@@ -63,7 +63,7 @@ namespace DIContainer.Test.Transient
             _ = collection.AddTransient<ISimpleTestingObject, SimpleTestingObject>();
             _ = collection.AddTransient<IParameterTestingObject, InterfaceParameterTestingObject>();
 
-            Assert.AreEqual(2, collection.Count(), "The collection should have an item after Singleton added.");
+            Assert.AreEqual(2, collection.Count(), "The collection should have an item after Transient added.");
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace DIContainer.Test.Transient
 
             var provider = collection.BuildServiceProvider();
 
-            Assert.Throws<Exception>(delegate { provider.GetService<IParameterTestingObject>(); }, "Should throw an exception if one on the parameter wanted is not referenced in the collection.");
+            Assert.Throws<Exception>(delegate { provider.GetService<IParameterTestingObject>(); }, "Should throw an exception if one of the parameter wanted is not referenced in the collection.");
         }
     }
 }

@@ -120,7 +120,7 @@ namespace DIContainer.Test.Singleton
 
             var provider = collection.BuildServiceProvider();
 
-            Assert.Throws<Exception>(delegate { provider.GetService<IParameterTestingObject>(); }, "Should throw an exception if one on the parameter wanted is not referenced in the collection.");
+            Assert.Throws<Exception>(delegate { provider.GetService<IParameterTestingObject>(); }, "Should throw an exception if one of the parameter wanted is not referenced in the collection.");
         }
     }
 }
