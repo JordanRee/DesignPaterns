@@ -25,10 +25,16 @@ namespace DIContainer
         public T GetService<T>() 
             => (T)GetService(typeof(T));
 
-        public object GetService(Type serviceType) 
-            => GetService(serviceType, NewScope());
+        public object GetService(Type serviceType)
+        {
+            var scopeId = NewScope();
 
-        private object GetService(Type serviceType, int scope)
+            var service = GetService(serviceType, scopeId, true);
+
+            return service;
+        }
+
+        private object GetService(Type serviceType, int scopeId, bool isBaseScope)
         {
             // Find service
             var serviceDescriptor = collection.ToList().FirstOrDefault(s => s.ServiceType == serviceType);
@@ -40,7 +46,7 @@ namespace DIContainer
 
             // Find constructor
             var implementedType = serviceDescriptor.ImplementationType;
-            object instance;
+            object instance = null;
 
             // Instantiate depending of the lifetime choosen
             switch (serviceDescriptor.Lifetime)
@@ -51,11 +57,9 @@ namespace DIContainer
                     {
                         instance = implementedType.GetConstructors().First().GetParameters().Length == 0
                             ? CreateInstance(implementedType)
-                            : CreateInstance(implementedType, scope);
+                            : CreateInstance(implementedType, scopeId);
 
                         singletonCollection.Add(SingletonDescriptor.CreateSingleton(serviceDescriptor.ServiceType, instance));
-                            
-                        return instance;
                     }
                     else
                     {
@@ -63,32 +67,44 @@ namespace DIContainer
                         return singletonCollection.First(s => s.Implementation.GetType() == serviceDescriptor.ImplementationType).Implementation;
                     }
 
+                    break;
+
                 // Scoped
                 case ServiceLifetime.Scoped:
-                    if (!scopedCollection.Any(s => s.Implementation.GetType() == serviceDescriptor.ImplementationType && s.ScopeId == scope))
+                    if (!scopedCollection.Any(s => s.Implementation.GetType() == serviceDescriptor.ImplementationType && s.ScopeId == scopeId))
                     {
                         instance = implementedType.GetConstructors().First().GetParameters().Length == 0
                             ? CreateInstance(implementedType)
-                            : CreateInstance(implementedType, scope);
+                            : CreateInstance(implementedType, scopeId);
 
-                        scopedCollection.Add(ScopeDescriptor.CreateScope(scope, serviceDescriptor.ServiceType, instance));
-
-                        return instance;
+                        scopedCollection.Add(ScopeDescriptor.CreateScope(scopeId, serviceDescriptor.ServiceType, instance));
                     }
                     else
                     {
                         Console.WriteLine("{0} found as Scoped", serviceType.FullName);
-                        return scopedCollection.First(s => s.Implementation.GetType() == serviceDescriptor.ImplementationType && s.ScopeId == scope).Implementation;
+                        instance = scopedCollection.First(s => s.Implementation.GetType() == serviceDescriptor.ImplementationType && s.ScopeId == scopeId).Implementation;
                     }
+
+                    break;
 
                 // Transient
                 case ServiceLifetime.Transient:
-                    return implementedType.GetConstructors().First().GetParameters().Length == 0
+                    instance = implementedType.GetConstructors().First().GetParameters().Length == 0
                         ? CreateInstance(implementedType)
-                        : CreateInstance(implementedType, scope);
+                        : CreateInstance(implementedType, scopeId);
+
+                    break;
             }
 
-            throw new Exception("Something went worng.");
+            // Scope cleanup
+            for (var index = 0; isBaseScope && (index <= scopedCollection.Count(s => s.ScopeId == scopeId) +1); index++)
+            {
+                var service = scopedCollection.FirstOrDefault(s => s.ScopeId == scopeId);
+
+                _ = scopedCollection.Remove(service);
+            }
+
+            return instance;
         }
 
         private object CreateInstance(Type type)
@@ -110,7 +126,7 @@ namespace DIContainer
             Console.WriteLine("Use {0} constructor.", implementedConstructor.ToString());
 
             foreach (var param in implementedParams)
-                parameters.Add(GetService(param.ParameterType, scope));
+                parameters.Add(GetService(param.ParameterType, scope, false));
 
             return implementedConstructor.Invoke(parameters.ToArray());
         }
