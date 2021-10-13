@@ -1,22 +1,38 @@
 ﻿
 namespace DIContainer.Descriptors
 {
-    using System;
-
+    /// <summary>
+    /// Class to describe a Scoped implementation.
+    /// </summary>
     internal class ScopeDescriptor
     {
-        private ScopeDescriptor(int scopeId, Type serviceType, object implementation)
+        /// <summary>
+        /// Create an instance of the <see cref="ScopeDescriptor"/> class.
+        /// </summary>
+        /// <param name="scopeId"></param>
+        /// <param name="implementation"><see langword="object"/> to store as Scoped implementation.</param>
+        private ScopeDescriptor(int scopeId, object implementation)
         {
             ScopeId = scopeId;
-            ServiceType = serviceType;
             Implementation = implementation;
         }
 
+        /// <summary>
+        /// Get the scope id of the object.
+        /// </summary>
         public int ScopeId { get; }
-        public Type ServiceType { get; }
+        /// <summary>
+        /// Get the implemented object.
+        /// </summary>
         public object Implementation { get; }
 
-        public static ScopeDescriptor CreateScope(int scopeId, Type serviceType, object implementation)
-            => new(scopeId, serviceType, implementation);
+        /// <summary>
+        /// Create a new <see cref="ScopeDescriptor"/>.
+        /// </summary>
+        /// <param name="scopeId"></param>
+        /// <param name="implementation">Implementation stored by the <see cref="ScopeDescriptor"/>.</param>
+        /// <returns>The <see cref="ScopeDescriptor"/> initialized.</returns>
+        public static ScopeDescriptor CreateScope(int scopeId, object implementation)
+            => new(scopeId, implementation);
     }
 }

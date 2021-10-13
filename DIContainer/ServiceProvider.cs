@@ -7,33 +7,60 @@ namespace DIContainer
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// Handle service instanciation.
+    /// </summary>
     public class ServiceProvider
     {
-        private ServiceCollection collection;
+        /// <summary>
+        /// Store the <see cref="ServiceCollection"/> to handle.
+        /// </summary>
+        private readonly ServiceCollection collection;
 
-        private ScopedCollection scopedCollection;
+        /// <summary>
+        /// Store instances with scopes declatrations references to handle scoped implementations.
+        /// </summary>
+        private readonly ScopedCollection scopedCollection;
 
-        private SingletonCollection singletonCollection;
+        /// <summary>
+        /// Store the Singleton instances created.
+        /// </summary>
+        private readonly SingletonCollection singletonCollection;
 
+        /// <summary>
+        /// Initialize a new instance of a <see cref="ServiceProvider"/>.
+        /// </summary>
+        /// <param name="collection"><see cref="ServiceCollection"/> that gona be used by the <see cref="ServiceProvider"/> to resolve the wanted implementations.</param>
         internal ServiceProvider(ServiceCollection collection)
         {
             this.collection = collection;
-            scopedCollection = new();
-            singletonCollection = new();
+            scopedCollection = ScopedCollection.CreateCollection();
+            singletonCollection = SingletonCollection.CreateCollection();
         }
 
+        /// <summary>
+        /// Gets an instance of the implementation choosen for <typeparamref name="T"/> service type given.
+        /// </summary>
+        /// <typeparam name="T">Service type wanted from the collection.</typeparam>
+        /// <returns>An instance of the wanted service.</returns>
         public T GetService<T>() 
             => (T)GetService(typeof(T));
 
-        public object GetService(Type serviceType)
-        {
-            var scopeId = NewScope();
+        /// <summary>
+        /// Gets an instance of the implementation choosen for <paramref name="serviceType"/> service type given.
+        /// </summary>
+        /// <param name="serviceType">Service type wanted from the collection.</param>
+        /// <returns>An instance of the wanted service.</returns>
+        public object GetService(Type serviceType) 
+            => GetService(serviceType, NewScope(), true);
 
-            var service = GetService(serviceType, scopeId, true);
-
-            return service;
-        }
-
+        /// <summary>
+        /// Gets an instance of the implementation choosen for <paramref name="serviceType"/> service type given.
+        /// </summary>
+        /// <param name="serviceType">Service type wanted from the collection.</param>
+        /// <param name="scopeId">Indicate the scope id to handle.</param>
+        /// <param name="isBaseScope">Indicate if the current service wanted is the first of his scope.</param>
+        /// <returns>An instance of the wanted service.</returns>
         private object GetService(Type serviceType, int scopeId, bool isBaseScope)
         {
             // Find service
@@ -59,7 +86,7 @@ namespace DIContainer
                             ? CreateInstance(implementedType)
                             : CreateInstance(implementedType, scopeId);
 
-                        singletonCollection.Add(SingletonDescriptor.CreateSingleton(serviceDescriptor.ServiceType, instance));
+                        singletonCollection.Add(SingletonDescriptor.CreateSingleton(instance));
                     }
                     else
                     {
@@ -77,7 +104,7 @@ namespace DIContainer
                             ? CreateInstance(implementedType)
                             : CreateInstance(implementedType, scopeId);
 
-                        scopedCollection.Add(ScopeDescriptor.CreateScope(scopeId, serviceDescriptor.ServiceType, instance));
+                        scopedCollection.Add(ScopeDescriptor.CreateScope(scopeId, instance));
                     }
                     else
                     {
@@ -89,6 +116,7 @@ namespace DIContainer
 
                 // Transient
                 case ServiceLifetime.Transient:
+                    Console.WriteLine("{0} found as Transient");
                     instance = implementedType.GetConstructors().First().GetParameters().Length == 0
                         ? CreateInstance(implementedType)
                         : CreateInstance(implementedType, scopeId);
@@ -96,18 +124,33 @@ namespace DIContainer
                     break;
             }
 
-            // Scope cleanup
-            for (var index = 0; isBaseScope && (index <= scopedCollection.Count(s => s.ScopeId == scopeId) +1); index++)
-            {
-                var service = scopedCollection.FirstOrDefault(s => s.ScopeId == scopeId);
-
-                _ = scopedCollection.Remove(service);
-            }
+            if(isBaseScope)
+                _ = CleanupScope(scopeId) ? true : throw new Exception("Scope failed to be fully cleaned up.");
 
             return instance;
         }
 
-        private object CreateInstance(Type type)
+        /// <summary>
+        /// Cleanup the given <paramref name="scopeId"/> reference and their instance associations from the list.
+        /// </summary>
+        /// <param name="scopeId">Indicate the scope id to handle.</param>
+        /// <returns>Return <see langword="true"/> if the scope is totally removed from the collection. Else, return <see langword="false"/>.</returns>
+        private bool CleanupScope(int scopeId)
+        {
+            ScopeDescriptor service = null;
+
+            while ((service = scopedCollection.FirstOrDefault(s => s.ScopeId == scopeId)) is not null)
+                _ = scopedCollection.Remove(service);
+
+            return !scopedCollection.Any(s => s.ScopeId == scopeId);
+        }
+
+        /// <summary>
+        /// Create an instance of the given <paramref name="type"/> with its default constructor.
+        /// </summary>
+        /// <param name="type"><see cref="Type"/> to generate instance from.</param>
+        /// <returns>Default <see cref="Type"/> instance generated.</returns>
+        private static object CreateInstance(Type type)
         {
             Console.WriteLine("Create {0} instance.", type.FullName);
             var instance = Activator.CreateInstance(type);
@@ -116,8 +159,15 @@ namespace DIContainer
             return instance;
         }
 
-        private object CreateInstance(Type type, int scope)
+        /// <summary>
+        /// Create an instance of the given <paramref name="type"/> with its first constructor.
+        /// </summary>
+        /// <param name="type"><see cref="Type"/> to generate instance from.</param>
+        /// <param name="scopeId">Indicate the scope id to handle.</param>
+        /// <returns>Default <see cref="Type"/> instance generated.</returns>
+        private object CreateInstance(Type type, int scopeId)
         {
+            Console.WriteLine("Create {0} instance.", type.FullName);
             var implementedConstructor = type.GetConstructors().First();
             var implementedParams = implementedConstructor.GetParameters();
 
@@ -126,24 +176,35 @@ namespace DIContainer
             Console.WriteLine("Use {0} constructor.", implementedConstructor.ToString());
 
             foreach (var param in implementedParams)
-                parameters.Add(GetService(param.ParameterType, scope, false));
+                parameters.Add(GetService(param.ParameterType, scopeId, false));
 
-            return implementedConstructor.Invoke(parameters.ToArray());
+            var instance =  implementedConstructor.Invoke(parameters.ToArray());
+            Console.WriteLine("Instance {0} successfully.", type.FullName);
+
+            return instance;
         }
 
+        /// <summary>
+        /// Create a new and unused scope identifier.
+        /// </summary>
+        /// <returns>Return a new and unsused scope identifier.</returns>
         private int NewScope()
         {
+            if (scopedCollection.Count >= int.MaxValue)
+                throw new OutOfMemoryException("Maximum scope relation reached.");
+
             var rand = new Random();
             int newId;
 
-            if (scopedCollection.Count >= int.MaxValue)
-                throw new OutOfMemoryException("Maximum scope relation reached.");
+            var scopedCollectionQueryable = scopedCollection.AsQueryable();
 
             do
             {
                 newId = rand.Next();
             }
-            while (scopedCollection.AsQueryable().Any(s => s.ScopeId == newId));
+            while (scopedCollectionQueryable.Any(s => s.ScopeId == newId));
+
+            Console.WriteLine("Create new scope with Id {0}.", newId);
 
             return newId;
         }

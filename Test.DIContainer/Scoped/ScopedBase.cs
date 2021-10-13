@@ -1,9 +1,9 @@
 ﻿
-using DIContainer.Collections;
-using NUnit.Framework;
-
 namespace DIContainer.Test.Scoped
 {
+    using DIContainer.Collections;
+    using NUnit.Framework;
+
     public abstract class ScopedBase : TestEnvironement
     {
         protected ServiceCollection collection;
@@ -11,7 +11,7 @@ namespace DIContainer.Test.Scoped
         [SetUp]
         protected void SetUp()
         {
-            collection = new ServiceCollection();
+            collection = ServiceCollection.CreateCollection();
         }
 
         [TearDown]

@@ -11,7 +11,7 @@ namespace DIContainer.Test.Singleton
         [SetUp]
         protected void SetUp()
         {
-            collection = new ServiceCollection();
+            collection = ServiceCollection.CreateCollection();
         }
 
         [TearDown]

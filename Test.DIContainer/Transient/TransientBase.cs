@@ -11,7 +11,7 @@ namespace DIContainer.Test.Transient
         [SetUp]
         protected void SetUp()
         {
-            collection = new ServiceCollection();
+            collection = ServiceCollection.CreateCollection();
         }
 
         [TearDown]

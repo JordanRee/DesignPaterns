@@ -4,8 +4,17 @@ namespace DIContainer.Extentions
     using DIContainer.Collections;
     using DIContainer.Descriptors;
 
+    /// <summary>
+    /// Extention to ease the Service listing.
+    /// </summary>
     public static class ServiceCollectionExtention
     {
+        /// <summary>
+        /// Add new <typeparamref name="T"/> implementation type to the <paramref name="collection"/> as Singleton.
+        /// </summary>
+        /// <typeparam name="T">Implementation type wanted.</typeparam>
+        /// <param name="collection"><see cref="ServiceCollection"/> to add the implementation type in.</param>
+        /// <returns>Return the service collection given.</returns>
         public static ServiceCollection AddSingleton<T>(this ServiceCollection collection)
             where T : class
         {
@@ -14,6 +23,13 @@ namespace DIContainer.Extentions
             return collection;
         }
 
+        /// <summary>
+        /// Add new <typeparamref name="TImplementation"/> implementation type for <typeparamref name="TService"/> to the <paramref name="collection"/> as Singleton.
+        /// </summary>
+        /// <typeparam name="TImplementation">Implementation type wanted.</typeparam>
+        /// <typeparam name="TService">Service targeted type.</typeparam>
+        /// <param name="collection"><see cref="ServiceCollection"/> to add the implementation type in.</param>
+        /// <returns>Return the service collection given.</returns>
         public static ServiceCollection AddSingleton<TService, TImplementation>(this ServiceCollection collection)
             where TService : class
             where TImplementation : class, TService
@@ -23,6 +39,12 @@ namespace DIContainer.Extentions
             return collection;
         }
 
+        /// <summary>
+        /// Add new <typeparamref name="T"/> implementation type to the <paramref name="collection"/> as Scoped.
+        /// </summary>
+        /// <typeparam name="T">Implementation type wanted.</typeparam>
+        /// <param name="collection"><see cref="ServiceCollection"/> to add the implementation type in.</param>
+        /// <returns>Return the service collection given.</returns>
         public static ServiceCollection AddScoped<T>(this ServiceCollection collection)
             where T : class
         {
@@ -31,6 +53,13 @@ namespace DIContainer.Extentions
             return collection;
         }
 
+        /// <summary>
+        /// Add new <typeparamref name="TImplementation"/> implementation type for <typeparamref name="TService"/> to the <paramref name="collection"/> as Scoped.
+        /// </summary>
+        /// <typeparam name="TImplementation">Implementation type wanted.</typeparam>
+        /// <typeparam name="TService">Service targeted type.</typeparam>
+        /// <param name="collection"><see cref="ServiceCollection"/> to add the implementation type in.</param>
+        /// <returns>Return the service collection given.</returns>
         public static ServiceCollection AddScoped<TService, TImplementation>(this ServiceCollection collection)
             where TService : class
             where TImplementation : class, TService
@@ -40,6 +69,12 @@ namespace DIContainer.Extentions
             return collection;
         }
 
+        /// <summary>
+        /// Add new <typeparamref name="T"/> implementation type to the <paramref name="collection"/> as Transient.
+        /// </summary>
+        /// <typeparam name="T">Implementation type wanted.</typeparam>
+        /// <param name="collection"><see cref="ServiceCollection"/> to add the implementation type in.</param>
+        /// <returns>Return the service collection given.</returns>
         public static ServiceCollection AddTransient<T>(this ServiceCollection collection)
             where T : class
         {
@@ -48,6 +83,13 @@ namespace DIContainer.Extentions
             return collection;
         }
 
+        /// <summary>
+        /// Add new <typeparamref name="TImplementation"/> implementation type for <typeparamref name="TService"/> to the <paramref name="collection"/> as Transient.
+        /// </summary>
+        /// <typeparam name="TImplementation">Implementation type wanted.</typeparam>
+        /// <typeparam name="TService">Service targeted type.</typeparam>
+        /// <param name="collection"><see cref="ServiceCollection"/> to add the implementation type in.</param>
+        /// <returns>Return the service collection given.</returns>
         public static ServiceCollection AddTransient<TService, TImplementation>(this ServiceCollection collection)
             where TService : class
             where TImplementation : class, TService

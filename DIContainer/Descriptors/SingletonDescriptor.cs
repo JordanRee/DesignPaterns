@@ -1,20 +1,29 @@
 ﻿
 namespace DIContainer.Descriptors
 {
-    using System;
-
+    /// <summary>
+    /// Class to describe a Singleton implementation.
+    /// </summary>
     internal class SingletonDescriptor
     {
-        private SingletonDescriptor(Type serviceType, object implementation)
-        {
-            ServiceType = serviceType;
-            Implementation = implementation;
-        }
+        /// <summary>
+        /// Create an instance of the <see cref="SingletonDescriptor"/> class.
+        /// </summary>
+        /// <param name="implementation"><see langword="object"/> to store as Singleton.</param>
+        private SingletonDescriptor(object implementation) 
+            => Implementation = implementation;
 
-        public Type ServiceType { get; }
+        /// <summary>
+        /// Get the implemented object.
+        /// </summary>
         public object Implementation { get; }
 
-        public static SingletonDescriptor CreateSingleton(Type serviceType, object implementation)
-            => new SingletonDescriptor(serviceType, implementation);
+        /// <summary>
+        /// Create a new <see cref="SingletonDescriptor"/>.
+        /// </summary>
+        /// <param name="implementation">Implementation stored by the <see cref="SingletonDescriptor"/>.</param>
+        /// <returns>The <see cref="SingletonDescriptor"/> initialized.</returns>
+        public static SingletonDescriptor CreateSingleton(object implementation)
+            => new(implementation);
     }
 }
