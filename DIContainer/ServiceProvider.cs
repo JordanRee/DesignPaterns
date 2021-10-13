@@ -64,12 +64,7 @@ namespace DIContainer
         private object GetService(Type serviceType, int scopeId, bool isBaseScope)
         {
             // Find service
-            var serviceDescriptor = collection.ToList().FirstOrDefault(s => s.ServiceType == serviceType);
-
-            if (serviceDescriptor is null)
-                throw new Exception($"{serviceType.FullName} is not registered in the service collection.");
-            else
-                Console.WriteLine("Resolving {0}", serviceType.FullName);
+            var serviceDescriptor = GetServiceDescriptor(serviceType);
 
             // Find constructor
             var implementedType = serviceDescriptor.ImplementationType;
@@ -80,18 +75,25 @@ namespace DIContainer
             {
                 // Singleton
                 case ServiceLifetime.Singleton:
-                    if (!singletonCollection.Any(s => s.Implementation.GetType() == serviceDescriptor.ImplementationType))
+                    if (serviceDescriptor.Implementation is not null)
                     {
-                        instance = implementedType.GetConstructors().First().GetParameters().Length == 0
-                            ? CreateInstance(implementedType)
-                            : CreateInstance(implementedType, scopeId);
-
-                        singletonCollection.Add(SingletonDescriptor.CreateSingleton(instance));
+                        instance = serviceDescriptor.Implementation;
                     }
                     else
                     {
-                        Console.WriteLine("{0} found as Singleton", serviceType.FullName);
-                        return singletonCollection.First(s => s.Implementation.GetType() == serviceDescriptor.ImplementationType).Implementation;
+                        if (!singletonCollection.Any(s => s.Implementation.GetType() == serviceDescriptor.ImplementationType))
+                        {
+                            instance = implementedType.GetConstructors().First().GetParameters().Length == 0
+                                ? CreateInstance(implementedType)
+                                : CreateInstance(implementedType, scopeId);
+
+                            singletonCollection.Add(SingletonDescriptor.CreateSingleton(instance));
+                        }
+                        else
+                        {
+                            Console.WriteLine("{0} found as Singleton", serviceType.FullName);
+                            return singletonCollection.First(s => s.Implementation.GetType() == serviceDescriptor.ImplementationType).Implementation;
+                        }
                     }
 
                     break;
@@ -124,10 +126,26 @@ namespace DIContainer
                     break;
             }
 
-            if(isBaseScope)
+            if (isBaseScope)
                 _ = CleanupScope(scopeId) ? true : throw new Exception("Scope failed to be fully cleaned up.");
 
             return instance;
+        }
+
+        /// <summary>
+        /// Get <see cref="ServiceDescriptor"/> of the wanted <paramref name="serviceType"/>.
+        /// </summary>
+        /// <param name="serviceType"><see cref="Type"/> to recover the description.</param>
+        /// <returns>Return the <see cref="ServiceDescriptor"/> found in the provider collection.</returns>
+        private ServiceDescriptor GetServiceDescriptor(Type serviceType)
+        {
+            var serviceDescriptor = collection.ToList().FirstOrDefault(s => s.ServiceType == serviceType);
+
+            if (serviceDescriptor is null)
+                throw new Exception($"{serviceType.FullName} is not registered in the service collection.");
+            else
+                Console.WriteLine("Resolving {0}", serviceType.FullName);
+            return serviceDescriptor;
         }
 
         /// <summary>

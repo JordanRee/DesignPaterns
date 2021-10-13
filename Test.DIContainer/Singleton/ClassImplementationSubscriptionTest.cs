@@ -7,7 +7,7 @@ namespace DIContainer.Test.Singleton
     using System;
     using System.Linq;
 
-    public class ObjectSubscriptionTest : SingletonBase
+    public class ClassImplementationSubscriptionTest : SingletonBase
     {
         [Test]
         public override void AddSingletonToCollection()

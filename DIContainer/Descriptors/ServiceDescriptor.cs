@@ -22,6 +22,18 @@ namespace DIContainer.Descriptors
         }
 
         /// <summary>
+        /// Create an instance of the <see cref="ScopeDescriptor"/> class.
+        /// </summary>
+        /// <param name="serviceType">Targeted service type.</param>
+        /// <param name="implementation">Implementation to use.</param>
+        private ServiceDescriptor(Type serviceType, object implementation)
+        {
+            ServiceType = serviceType;
+            ImplementationType = implementation.GetType();
+            Implementation = implementation;
+        }
+
+        /// <summary>
         /// Get the service type targeted.
         /// </summary>
         public Type ServiceType { get; }
@@ -33,6 +45,10 @@ namespace DIContainer.Descriptors
         /// Get the lifetime value of the implementation.
         /// </summary>
         public ServiceLifetime Lifetime { get; }
+        /// <summary>
+        /// Get the implementation registered.
+        /// </summary>
+        public object Implementation { get; }
 
         /// <summary>
         /// Create a Singleton <see cref="ServiceDescriptor"/>.
@@ -43,7 +59,17 @@ namespace DIContainer.Descriptors
         public static ServiceDescriptor CreateSingleton<TService, TImplementation>()
             where TService : class
             where TImplementation : class, TService
-            => new (typeof(TService), typeof(TImplementation), ServiceLifetime.Singleton);
+            => new(typeof(TService), typeof(TImplementation), ServiceLifetime.Singleton);
+
+        /// <summary>
+        /// Create a Singleton <see cref="ServiceDescriptor"/>.
+        /// </summary>
+        /// <typeparam name="T">Service targeted.</typeparam>
+        /// <param name="implementation"><typeparamref name="T"/> instance to use during the implementation.</param>
+        /// <returns><see cref="ServiceDescriptor"/> of the implementation.</returns>
+        public static ServiceDescriptor CreateSingleton<T>(T implementation)
+            where T : class
+            => new(typeof(T), implementation); 
 
         /// <summary>
         /// Create a Scoped <see cref="ServiceDescriptor"/>.

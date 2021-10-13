@@ -7,7 +7,7 @@ namespace DIContainer.Test.Transient
     using System;
     using System.Linq;
 
-    public class ObjectSubscriptionTest : TransientBase
+    public class ClassImplementationSubscriptionTest : TransientBase
     {
         [Test]
         public override void AddTransientToCollection()

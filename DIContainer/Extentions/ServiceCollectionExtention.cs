@@ -40,6 +40,21 @@ namespace DIContainer.Extentions
         }
 
         /// <summary>
+        /// Add new <typeparamref name="T"/> implementation type to the <paramref name="collection"/> as Singleton with the <paramref name="implementation"/> provided.
+        /// </summary>
+        /// <typeparam name="T">Implementation type wanted.</typeparam>
+        /// <param name="collection"><see cref="ServiceCollection"/> to add the implementation type in.</param>
+        /// <param name="implementation"><typeparamref name="T"/> implementation to use.</param>
+        /// <returns></returns>
+        public static ServiceCollection AddSingleton<T>(this ServiceCollection collection, T implementation)
+            where T : class
+        {
+            collection.Add(ServiceDescriptor.CreateSingleton(implementation));
+
+            return collection;
+        }
+
+        /// <summary>
         /// Add new <typeparamref name="T"/> implementation type to the <paramref name="collection"/> as Scoped.
         /// </summary>
         /// <typeparam name="T">Implementation type wanted.</typeparam>

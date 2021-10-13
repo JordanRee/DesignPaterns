@@ -7,7 +7,7 @@ namespace DIContainer.Test.Scoped
     using System;
     using System.Linq;
 
-    public class ObjectSubscriptionTest : ScopedBase
+    public class ClassImplementationSubscriptionTest : ScopedBase
     {
 
         [Test]
