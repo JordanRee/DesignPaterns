@@ -31,6 +31,21 @@ namespace DIContainer.Descriptors
             ServiceType = serviceType;
             ImplementationType = implementation.GetType();
             Implementation = implementation;
+            Lifetime = ServiceLifetime.Singleton;
+        }
+
+        /// <summary>
+        /// Create an instance of the <see cref="ScopeDescriptor"/> class.
+        /// </summary>
+        /// <param name="serviceType">Targeted service type.</param>
+        /// <param name="factory">Factory to use for the implementations.</param>
+        /// <param name="lifetime">Lifetime associated to the implementatino.</param>
+        private ServiceDescriptor(Type serviceType, Func<ServiceProvider, object> factory, ServiceLifetime lifetime)
+        {
+            ServiceType = serviceType;
+            ImplementationType = serviceType;
+            ImplementationFactory = factory;
+            Lifetime = lifetime;
         }
 
         /// <summary>
@@ -42,13 +57,17 @@ namespace DIContainer.Descriptors
         /// </summary>
         public Type ImplementationType { get; }
         /// <summary>
-        /// Get the lifetime value of the implementation.
+        /// Get the implementation factory.
         /// </summary>
-        public ServiceLifetime Lifetime { get; }
+        public Func<ServiceProvider, object> ImplementationFactory { get; }
         /// <summary>
         /// Get the implementation registered.
         /// </summary>
         public object Implementation { get; }
+        /// <summary>
+        /// Get the lifetime value of the implementation.
+        /// </summary>
+        public ServiceLifetime Lifetime { get; }
 
         /// <summary>
         /// Create a Singleton <see cref="ServiceDescriptor"/>.
@@ -69,7 +88,17 @@ namespace DIContainer.Descriptors
         /// <returns><see cref="ServiceDescriptor"/> of the implementation.</returns>
         public static ServiceDescriptor CreateSingleton<T>(T implementation)
             where T : class
-            => new(typeof(T), implementation); 
+            => new(typeof(T), implementation);
+
+        /// <summary>
+        /// Create a Singleton <see cref="ServiceDescriptor"/>.
+        /// </summary>
+        /// <typeparam name="T">Service targeted.</typeparam>
+        /// <param name="factory"><typeparamref name="T"/> factory to use during the implementation.</param>
+        /// <returns><see cref="ServiceDescriptor"/> of the implementation.</returns>
+        public static ServiceDescriptor CreateSingleton<T>(Func<ServiceProvider, T> factory)
+            where T : class
+            => new(typeof(T), factory, ServiceLifetime.Singleton);
 
         /// <summary>
         /// Create a Scoped <see cref="ServiceDescriptor"/>.
@@ -83,6 +112,16 @@ namespace DIContainer.Descriptors
             => new(typeof(TService), typeof(TImplementation), ServiceLifetime.Scoped);
 
         /// <summary>
+        /// Create a Scoped <see cref="ServiceDescriptor"/>.
+        /// </summary>
+        /// <typeparam name="T">Service targeted.</typeparam>
+        /// <param name="factory"><typeparamref name="T"/> factory to use during the implementation.</param>
+        /// <returns><see cref="ServiceDescriptor"/> of the implementation.</returns>
+        public static ServiceDescriptor CreateScoped<T>(Func<ServiceProvider, T> factory)
+            where T : class
+            => new(typeof(T), factory, ServiceLifetime.Scoped);
+
+        /// <summary>
         /// Create a Transient <see cref="ServiceDescriptor"/>.
         /// </summary>
         /// <typeparam name="TService">Service targeted.</typeparam>
@@ -92,6 +131,16 @@ namespace DIContainer.Descriptors
             where TService : class
             where TImplementation : class, TService
             => new(typeof(TService), typeof(TImplementation), ServiceLifetime.Transient);
+
+        /// <summary>
+        /// Create a Transient <see cref="ServiceDescriptor"/>.
+        /// </summary>
+        /// <typeparam name="T">Service targeted.</typeparam>
+        /// <param name="factory"><typeparamref name="T"/> factory to use during the implementation.</param>
+        /// <returns><see cref="ServiceDescriptor"/> of the implementation.</returns>
+        public static ServiceDescriptor CreateTransient<T>(Func<ServiceProvider, T> factory)
+            where T : class
+            => new(typeof(T), factory, ServiceLifetime.Transient);
     }
 
     /// <summary>

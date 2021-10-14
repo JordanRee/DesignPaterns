@@ -11,13 +11,16 @@ namespace Singleton
             TestInt = testInt;
         }
 
-        public string TestStr { get; }
-        public int TestInt { get; }
+        public string TestStr { get; set; }
+        public int TestInt { get; set; }
 
         public static Singleton GetSingleton(string testStr, int testInt) 
             => instance ??= new(testStr, testInt);
 
         public static Singleton GetSingleton()
             => instance ??= new("default", 0);
+
+        public static void ResetSingleton()
+            => instance = null;
     }
 }
