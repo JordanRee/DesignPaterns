@@ -7,7 +7,7 @@ namespace DIContainer.Test.Scoped
     using System;
     using System.Linq;
 
-    public class ClassImplementationSubscriptionTest : ScopedBase
+    public class InterfaceImplementationSubscriptionTest : ScopedBase
     {
 
         [Test]
@@ -15,11 +15,11 @@ namespace DIContainer.Test.Scoped
         {
             Assert.IsFalse(collection.Any(), "The collection should be null on initialization.");
 
-            _ = collection.AddScoped<SimpleTestingObject>();
+            _ = collection.AddScoped<ISimpleTestingObject, SimpleTestingObject>();
 
             Assert.AreEqual(1, collection.Count(), "The collection should have an item after Scoped added.");
 
-            Assert.AreEqual(typeof(SimpleTestingObject), collection.First().ServiceType, "The service type to target should be equal.");
+            Assert.AreEqual(typeof(ISimpleTestingObject), collection.First().ServiceType, "The service type to target should be equal.");
             Assert.AreEqual(typeof(SimpleTestingObject), collection.First().ImplementationType, "The service type to target should be equal.");
             Assert.AreEqual(ServiceLifetime.Scoped, collection.First().Lifetime, "The registered service should be registered as Singleton.");
         }
@@ -27,25 +27,26 @@ namespace DIContainer.Test.Scoped
         [Test]
         public override void RightScopedObjectCreatedAndResolved()
         {
-            _ = collection.AddScoped<SimpleTestingObject>();
+            _ = collection.AddScoped<ISimpleTestingObject, SimpleTestingObject>();
 
             var provider = collection.BuildServiceProvider();
 
-            var pile1 = provider.GetService<SimpleTestingObject>();
+            var pile1 = provider.GetService<ISimpleTestingObject>();
 
             Assert.NotNull(pile1, "The service return by the provider should not be null.");
             Assert.AreEqual(typeof(SimpleTestingObject), pile1.GetType(), "The types should be the same.");
+            Assert.Contains(typeof(ISimpleTestingObject), pile1.GetType().GetInterfaces(), "The resolved object should contain the wanted interface.");
         }
 
         [Test]
         public override void ObjectProvidedAreNotSameOnDifferentCallPile()
         {
-            _ = collection.AddScoped<SimpleTestingObject>();
+            _ = collection.AddScoped<ISimpleTestingObject, SimpleTestingObject>();
 
             var provider = collection.BuildServiceProvider();
 
-            var pile1 = provider.GetService<SimpleTestingObject>();
-            var pile2 = provider.GetService<SimpleTestingObject>();
+            var pile1 = provider.GetService<ISimpleTestingObject>();
+            var pile2 = provider.GetService<ISimpleTestingObject>();
 
             Assert.AreNotSame(pile1, pile2, "Both objects should be the same on init.");
 
@@ -62,9 +63,9 @@ namespace DIContainer.Test.Scoped
         {
             Assert.IsFalse(collection.Any(), "The collection should be null on initialization.");
 
-            _ = collection.AddScoped<SimpleTestingObject>();
-            _ = collection.AddScoped<ClassParameterTestingObject>();
-            _ = collection.AddScoped<ClassParameterTestingObject2>();
+            _ = collection.AddScoped<ISimpleTestingObject, SimpleTestingObject>();
+            _ = collection.AddScoped<IParameterTestingObject, InterfaceParameterTestingObject>();
+            _ = collection.AddScoped<IParameterTestingObject2, InterfaceParameterTestingObject2>();
 
             Assert.AreEqual(3, collection.Count(), "The collection should have an item after Scoped added.");
         }
@@ -72,40 +73,43 @@ namespace DIContainer.Test.Scoped
         [Test]
         public override void RightScopedObjectCreatedAndResolvedWithParams()
         {
-            _ = collection.AddScoped<SimpleTestingObject>();
-            _ = collection.AddScoped<ClassParameterTestingObject>();
-            _ = collection.AddScoped<ClassParameterTestingObject2>();
+            _ = collection.AddScoped<ISimpleTestingObject, SimpleTestingObject>();
+            _ = collection.AddScoped<IParameterTestingObject, InterfaceParameterTestingObject>();
+            _ = collection.AddScoped<IParameterTestingObject2, InterfaceParameterTestingObject2>();
 
             var provider = collection.BuildServiceProvider();
 
-            var pile1 = provider.GetService<SimpleTestingObject>();
+            var pile1 = provider.GetService<ISimpleTestingObject>();
 
             Assert.NotNull(pile1, "The service return by the provider should not be null.");
             Assert.AreEqual(typeof(SimpleTestingObject), pile1.GetType(), "The types should be the same.");
+            Assert.Contains(typeof(ISimpleTestingObject), pile1.GetType().GetInterfaces(), "The resolved object should contain the wanted interface.");
 
-            var pile2 = provider.GetService<ClassParameterTestingObject>();
+            var pile2 = provider.GetService<IParameterTestingObject>();
 
             Assert.NotNull(pile2, "The service return by the provider should not be null.");
-            Assert.AreEqual(typeof(ClassParameterTestingObject), pile2.GetType(), "The types should be the same.");
+            Assert.AreEqual(typeof(InterfaceParameterTestingObject), pile2.GetType(), "The types should be the same.");
+            Assert.Contains(typeof(IParameterTestingObject), pile2.GetType().GetInterfaces(), "The resolved object should contain the wanted interface.");
 
-            var pile3 = provider.GetService<ClassParameterTestingObject2>();
+            var pile3 = provider.GetService<IParameterTestingObject2>();
 
             Assert.NotNull(pile3, "The service return by the provider should not be null.");
-            Assert.AreEqual(typeof(ClassParameterTestingObject2), pile3.GetType(), "The types should be the same.");
+            Assert.AreEqual(typeof(InterfaceParameterTestingObject2), pile3.GetType(), "The types should be the same.");
+            Assert.Contains(typeof(IParameterTestingObject2), pile3.GetType().GetInterfaces(), "The resolved object should contain the wanted interface.");
         }
 
         [Test]
         public override void ObjectProvidedAreTheSameOnSameCallPileWithParams()
         {
-            _ = collection.AddScoped<SimpleTestingObject>();
-            _ = collection.AddScoped<ClassParameterTestingObject>();
-            _ = collection.AddScoped<ClassParameterTestingObject2>();
+            _ = collection.AddScoped<ISimpleTestingObject, SimpleTestingObject>();
+            _ = collection.AddScoped<IParameterTestingObject, InterfaceParameterTestingObject>();
+            _ = collection.AddScoped<IParameterTestingObject2, InterfaceParameterTestingObject2>();
 
             var provider = collection.BuildServiceProvider();
 
-            var object1 = provider.GetService<ClassParameterTestingObject2>();
-            var object2 = provider.GetService<ClassParameterTestingObject2>();
-            var object3 = provider.GetService<SimpleTestingObject>();
+            var object1 = provider.GetService<IParameterTestingObject2>();
+            var object2 = provider.GetService<IParameterTestingObject2>();
+            var object3 = provider.GetService<ISimpleTestingObject>();
 
             Assert.AreNotSame(object1, object2, "Both base objects shouldn't be the same on init.");
             Assert.AreSame(object1.SimpleTestObj, object1.ParamTestObj.SimpleTestObj, "Both inner object of the same type should be the same on init.");
@@ -136,11 +140,11 @@ namespace DIContainer.Test.Scoped
         [Test]
         public override void HasMissingReference()
         {
-            _ = collection.AddScoped<ClassParameterTestingObject>();
+            _ = collection.AddScoped<IParameterTestingObject, InterfaceParameterTestingObject>();
 
             var provider = collection.BuildServiceProvider();
 
-            Assert.Throws<Exception>(delegate { provider.GetService<ClassParameterTestingObject>(); }, "Should throw an exception if one of the parameter wanted is not referenced in the collection.");
+            _ = Assert.Throws<Exception>(delegate { _ = provider.GetService<IParameterTestingObject>(); }, "Should throw an exception if one of the parameter wanted is not referenced in the collection.");
         }
     }
 }

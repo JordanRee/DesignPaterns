@@ -7,14 +7,14 @@ namespace DIContainer.Test.Transient
     using System;
     using System.Linq;
 
-    public class ClassImplementationSubscriptionTest : TransientBase
+    public class FactorySubscriptionTest : TransientBase
     {
         [Test]
         public override void AddTransientToCollection()
         {
             Assert.IsFalse(collection.Any(), "The collection should be null on initialization.");
 
-            _ = collection.AddTransient<SimpleTestingObject>();
+            _ = collection.AddTransient((s) => new SimpleTestingObject());
 
             Assert.AreEqual(1, collection.Count(), "The collection should have an item after Transient added.");
 
@@ -26,7 +26,7 @@ namespace DIContainer.Test.Transient
         [Test]
         public override void RightTransientObjectCreatedAndResolvedByProvider()
         {
-            _ = collection.AddTransient<SimpleTestingObject>();
+            _ = collection.AddTransient((s) => new SimpleTestingObject());
 
             var provider = collection.BuildServiceProvider();
 
@@ -39,7 +39,7 @@ namespace DIContainer.Test.Transient
         [Test]
         public override void ObjectProvidedAreNotTheSame()
         {
-            _ = collection.AddTransient<SimpleTestingObject>();
+            _ = collection.AddTransient((s) => new SimpleTestingObject());
 
             var provider = collection.BuildServiceProvider();
 
@@ -59,8 +59,8 @@ namespace DIContainer.Test.Transient
         {
             Assert.IsFalse(collection.Any(), "The collection should be null on initialization.");
 
-            _ = collection.AddTransient<SimpleTestingObject>();
-            _ = collection.AddTransient<ClassParameterTestingObject>();
+            _ = collection.AddTransient((s) => new SimpleTestingObject());
+            _ = collection.AddTransient((s) => new ClassParameterTestingObject(s.GetService<SimpleTestingObject>()));
 
             Assert.AreEqual(2, collection.Count(), "The collection should have an item after Transient added.");
         }
@@ -68,8 +68,8 @@ namespace DIContainer.Test.Transient
         [Test]
         public override void RightTransientObjectCreatedAndResolvedWithParams()
         {
-            _ = collection.AddTransient<SimpleTestingObject>();
-            _ = collection.AddTransient<ClassParameterTestingObject>();
+            _ = collection.AddTransient((s) => new SimpleTestingObject());
+            _ = collection.AddTransient((s) => new ClassParameterTestingObject(s.GetService<SimpleTestingObject>()));
 
             var provider = collection.BuildServiceProvider();
 
@@ -87,8 +87,8 @@ namespace DIContainer.Test.Transient
         [Test]
         public override void ObjectProvidedAreNotTheSameWithParams()
         {
-            _ = collection.AddTransient<SimpleTestingObject>();
-            _ = collection.AddTransient<ClassParameterTestingObject>();
+            _ = collection.AddTransient((s) => new SimpleTestingObject());
+            _ = collection.AddTransient((s) => new ClassParameterTestingObject(s.GetService<SimpleTestingObject>()));
 
             var provider = collection.BuildServiceProvider();
 
@@ -119,11 +119,11 @@ namespace DIContainer.Test.Transient
         [Test]
         public override void HasMissingReference()
         {
-            _ = collection.AddTransient<ClassParameterTestingObject>();
+            _ = collection.AddTransient((s) => new ClassParameterTestingObject(s.GetService<SimpleTestingObject>()));
 
             var provider = collection.BuildServiceProvider();
 
-            Assert.Throws<Exception>(delegate { provider.GetService<ClassParameterTestingObject>(); }, "Should throw an exception if one of the parameter wanted is not referenced in the collection.");
+            _ = Assert.Throws<Exception>(delegate { _ = provider.GetService<ClassParameterTestingObject>(); }, "Should throw an exception if one of the parameter wanted is not referenced in the collection.");
         }
     }
 }
