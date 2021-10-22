@@ -3,18 +3,27 @@ namespace AbstractFactory.Factories
 {
     using AbstractFactory.Interfaces;
 
-    public class LuxuriousFactory : IAbstractFactory
+    /// <summary>
+    /// Define a kuxurious vehicle factory.
+    /// </summary>
+    public class LuxuriousFactory : IAbstractVehicleFactory
     {
         private LuxuriousFactory()
         { }
 
-        public IAbstractCarFactory CreateCar() 
-            => new LuxuriousCarFactory();
+        /// <inheritdoc/>
+        public IAbstractCarProduct CreateCar() 
+            => new LuxuriousCar();
 
-        public IAbstractShipFactory CreateShip() 
-            => new LuxuriousShipFactory();
+        /// <inheritdoc/>
+        public IAbstractShipProduct CreateShip() 
+            => new LuxuriousShip();
 
-        public static IAbstractFactory GetFactory() 
+        /// <summary>
+        /// Create a luxurious vehicle factory.
+        /// </summary>
+        /// <returns>Return a <see cref="IAbstractVehicleFactory"/> factory.</returns>
+        public static IAbstractVehicleFactory GetFactory() 
             => new LuxuriousFactory();
     }
 }

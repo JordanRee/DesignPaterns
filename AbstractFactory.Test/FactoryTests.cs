@@ -7,8 +7,8 @@ namespace AbstractFactory.Test
 
     public class FactoryTests
     {
-        private IAbstractFactory common;
-        private IAbstractFactory luxurious;
+        private IAbstractVehicleFactory common;
+        private IAbstractVehicleFactory luxurious;
 
         [SetUp]
         public void SetUp()

@@ -3,18 +3,28 @@ namespace AbstractFactory.Factories
 {
     using AbstractFactory.Interfaces;
 
-    public class CommonFactory : IAbstractFactory
+    /// <summary>
+    /// Define a common vehicle factory.
+    /// </summary>
+    public class CommonFactory : IAbstractVehicleFactory
     {
         private CommonFactory()
         { }
 
-        public IAbstractCarFactory CreateCar()
-            => new CommonCarFactory();
+        /// <inheritdoc/>
+        public IAbstractCarProduct CreateCar()
+            => new CommonCar();
 
-        public IAbstractShipFactory CreateShip()
-            => new CommonShipFactory();
+        /// <inheritdoc/>
+        public IAbstractShipProduct CreateShip()
+            => new CommonShip();
 
-        public static IAbstractFactory GetFactory()
+
+        /// <summary>
+        /// Create a common vehicle factory.
+        /// </summary>
+        /// <returns>Return a <see cref="IAbstractVehicleFactory"/> factory.</returns>
+        public static IAbstractVehicleFactory GetFactory()
             => new CommonFactory();
     }
 }

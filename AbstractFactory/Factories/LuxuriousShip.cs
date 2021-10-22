@@ -5,14 +5,24 @@ namespace AbstractFactory.Factories
     using System;
     using System.Collections.Generic;
 
-    public class LuxuriousShipFactory : IAbstractShipFactory
+    /// <summary>
+    /// Define a luxurious ship.
+    /// </summary>
+    public class LuxuriousShip : IAbstractShipProduct
     {
-        private readonly IList<string> availableModels =
+        /// <summary>
+        /// Sort the available models.
+        /// </summary>
+        private static IList<string> availableModels =
             new List<string>() { "Row V. Wave", "Dirty Oar", "Tumeric", "Life is Good", "Dreadnought", "Ships n' Giggles", "Moor Often Than Knot", "Grace to Glory", "Best of Boat Worlds", "The Court Ship", "Sea Senora", "Big Nauti"};
 
-        public LuxuriousShipFactory()
+        /// <summary>
+        /// Create a new instance of <see cref="LuxuriousShip"/>.
+        /// </summary>
+        public LuxuriousShip()
             => Name = availableModels[new Random().Next(availableModels.Count - 1)];
 
+        /// <inheritdoc/>
         public string Name { get; }
     }
 }

@@ -7,12 +7,12 @@ namespace Singleton.Test
     {
         [TearDown]
         public void TearDown() 
-            => Singleton.ResetSingleton();
+            => SingletonExample.ResetSingleton();
 
         [Test]
         public void GetDefaultObjectOnInit()
         {
-            var obj = Singleton.GetSingleton();
+            var obj = SingletonExample.GetSingleton();
 
             Assert.NotNull(obj, "The object isn't supposed to be null on init.");
         }
@@ -20,8 +20,8 @@ namespace Singleton.Test
         [Test]
         public void GetSameSingletonInstance()
         {
-            var object1 = Singleton.GetSingleton();
-            var object2 = Singleton.GetSingleton();
+            var object1 = SingletonExample.GetSingleton();
+            var object2 = SingletonExample.GetSingleton();
 
             Assert.AreSame(object1, object2, "Both objects are supposed to be a reference to the same instance on init.");
             Assert.AreEqual(object1.TestStr, object2.TestStr, "Both objects are supposed have the same values on init.");
@@ -34,7 +34,7 @@ namespace Singleton.Test
             Assert.AreEqual(object1.TestStr, object2.TestStr, "Both objects are supposed have the same values after changes.");
             Assert.AreEqual(object1.TestInt, object2.TestInt, "Both objects are supposed have the same values after changes.");
 
-            var object3 = Singleton.GetSingleton();
+            var object3 = SingletonExample.GetSingleton();
 
             Assert.AreSame(object1, object3, "Both objects are supposed to be a reference to the same instance.");
         }
@@ -42,7 +42,7 @@ namespace Singleton.Test
         [Test]
         public void SingletonInitialisationNoParams()
         {
-            var obj = Singleton.GetSingleton();
+            var obj = SingletonExample.GetSingleton();
 
             Assert.AreEqual("default", obj.TestStr, "The string should have the default values on singleton init.");
             Assert.AreEqual(0, obj.TestInt, "The int should have the default values on singleton init.");
@@ -54,7 +54,7 @@ namespace Singleton.Test
             var testTxt = "text";
             var testInt = 20;
 
-            var obj = Singleton.GetSingleton(testTxt, testInt);
+            var obj = SingletonExample.GetSingleton(testTxt, testInt);
 
             Assert.AreEqual(testTxt, obj.TestStr, "The string values should be the same on singleton init.");
             Assert.AreEqual(testInt, obj.TestInt, "The int values should be the same on singleton init.");
@@ -66,14 +66,14 @@ namespace Singleton.Test
             var testTxt = "text";
             var testInt = 20;
 
-            var object1 = Singleton.GetSingleton(testTxt, testInt);
+            var object1 = SingletonExample.GetSingleton(testTxt, testInt);
 
             Assert.AreEqual(testTxt, object1.TestStr, "The string values should be the same on singleton init.");
             Assert.AreEqual(testInt, object1.TestInt, "The int values should be the same on singleton init.");
 
-            Singleton.ResetSingleton();
+            SingletonExample.ResetSingleton();
 
-            var object2 = Singleton.GetSingleton(testTxt, testInt);
+            var object2 = SingletonExample.GetSingleton(testTxt, testInt);
 
             Assert.AreNotSame(object1, object2, "The objets shouldn't be the same.");
             Assert.AreEqual(testTxt, object2.TestStr, "The string should have the default values on singleton init.");
