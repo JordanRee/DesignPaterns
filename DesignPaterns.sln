@@ -7,9 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DIContainer", "DIContainer\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DIContainer.Test", "DIContainer.Test\DIContainer.Test.csproj", "{38E09BF7-1D75-4FDA-A23F-9BB258CE9DF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singleton", "Singleton\Singleton.csproj", "{A7BD7328-EB06-49FB-9CA4-4D1E53DB0B55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singleton", "Singleton\Singleton.csproj", "{A7BD7328-EB06-49FB-9CA4-4D1E53DB0B55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singleton.Test", "Singleton.Test\Singleton.Test.csproj", "{92CBF25C-7190-4C59-BA47-2E7552122302}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singleton.Test", "Singleton.Test\Singleton.Test.csproj", "{92CBF25C-7190-4C59-BA47-2E7552122302}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbstractFactory", "AbstractFactory\AbstractFactory.csproj", "{C9370F60-E963-49DD-97E6-910C62FD1FFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbstractFactory.Test", "AbstractFactory.Test\AbstractFactory.Test.csproj", "{B39BC797-6983-4428-95A1-ED9433821B07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{92CBF25C-7190-4C59-BA47-2E7552122302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92CBF25C-7190-4C59-BA47-2E7552122302}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92CBF25C-7190-4C59-BA47-2E7552122302}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9370F60-E963-49DD-97E6-910C62FD1FFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9370F60-E963-49DD-97E6-910C62FD1FFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9370F60-E963-49DD-97E6-910C62FD1FFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9370F60-E963-49DD-97E6-910C62FD1FFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B39BC797-6983-4428-95A1-ED9433821B07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B39BC797-6983-4428-95A1-ED9433821B07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B39BC797-6983-4428-95A1-ED9433821B07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B39BC797-6983-4428-95A1-ED9433821B07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

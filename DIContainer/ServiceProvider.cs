@@ -96,7 +96,7 @@ namespace DIContainer
                         else
                         {
                             Console.WriteLine("{0} found as Singleton", serviceType.FullName);
-                            return singletonCollection.First(s => s.Implementation.GetType() == serviceDescriptor.ImplementationType).Implementation;
+                            instance = singletonCollection.First(s => s.Implementation.GetType() == serviceDescriptor.ImplementationType).Implementation;
                         }
                     }
 
@@ -106,9 +106,11 @@ namespace DIContainer
                 case ServiceLifetime.Scoped:
                     if (!scopedCollection.Any(s => s.Implementation.GetType() == serviceDescriptor.ImplementationType))
                     {
-                        instance = implementedType.GetConstructors().First().GetParameters().Length == 0
-                            ? CreateInstanceNoParams(implementedType)
-                            : CreateInstanceWithParams(implementedType);
+                        instance = serviceDescriptor.ImplementationFactory is not null
+                            ? serviceDescriptor.ImplementationFactory.Invoke(this)
+                            : implementedType.GetConstructors().First().GetParameters().Length == 0
+                                ? CreateInstanceNoParams(implementedType)
+                                : CreateInstanceWithParams(implementedType);
 
                         scopedCollection.Add(ScopeDescriptor.CreateScope(instance));
                     }
@@ -123,9 +125,11 @@ namespace DIContainer
                 // Transient
                 case ServiceLifetime.Transient:
                     Console.WriteLine("{0} found as Transient");
-                    instance = implementedType.GetConstructors().First().GetParameters().Length == 0
-                        ? CreateInstanceNoParams(implementedType)
-                        : CreateInstanceWithParams(implementedType);
+                    instance = serviceDescriptor.ImplementationFactory is not null
+                        ? serviceDescriptor.ImplementationFactory.Invoke(this)
+                        : implementedType.GetConstructors().First().GetParameters().Length == 0
+                            ? CreateInstanceNoParams(implementedType)
+                            : CreateInstanceWithParams(implementedType);
 
                     break;
             }
